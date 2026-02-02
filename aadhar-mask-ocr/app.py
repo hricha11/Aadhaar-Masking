@@ -21,6 +21,7 @@ else:
 
 
 
+
 # ---------------- YOUR ORIGINAL FUNCTIONS ----------------
 
 def rotate(image, center=None, scale=1.0):

@@ -6,3 +6,10 @@ Start the app
 Test for files 
 
 `` python client.py``
+
+
+OpenCV → preprocess image
+        ↓
+Tesseract → read digits
+        ↓
+OpenCV → draw white boxes (mask)

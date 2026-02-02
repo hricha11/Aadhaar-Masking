@@ -9,11 +9,16 @@ from fastapi.responses import FileResponse
 from fastapi.responses import StreamingResponse
 import uuid
 import io
+import os
 
 app = FastAPI()
 
-# Set Tesseract path (Windows)
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
+if os.name == "nt":
+    pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+else:
+    pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
+
 
 
 # ---------------- YOUR ORIGINAL FUNCTIONS ----------------

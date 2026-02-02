@@ -6,7 +6,9 @@ from scipy import ndimage
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
 from fastapi.responses import FileResponse
+from fastapi.responses import StreamingResponse
 import uuid
+import io
 
 app = FastAPI()
 
@@ -97,10 +99,16 @@ async def mask_aadhaar(file: UploadFile = File(...)):
         })
 
     filename = f"masked_{uuid.uuid4()}.png"
+
+    # 1️⃣ Save to disk
     cv2.imwrite(filename, masked_image)
 
-    return JSONResponse({
-        "status": "success",
-        "uid_parts": UID,
-        "masked_image_file": filename
-    })
+    # 2️⃣ Send image in response
+    success, encoded_image = cv2.imencode(".png", masked_image)
+    if not success:
+        return JSONResponse({"status": "error", "message": "Image encoding failed"})
+
+    return StreamingResponse(
+        io.BytesIO(encoded_image.tobytes()),
+        media_type="image/png"
+    )

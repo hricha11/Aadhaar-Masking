@@ -20,18 +20,13 @@ else:
     pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
 
 
+# ---------------- IMAGE PROCESSING FUNCTIONS ----------------
 
-
-# ---------------- YOUR ORIGINAL FUNCTIONS ----------------
-
-def rotate(image, center=None, scale=1.0):
-    angle = int(re.search(r'(?<=Rotate: )\d+', pytesseract.image_to_osd(image)).group(0))
-    (h, w) = image.shape[:2]
-    if center is None:
-        center = (w / 2, h / 2)
-    rotated = ndimage.rotate(image, float(angle) * -1)
+def rotate(image):
+    osd = pytesseract.image_to_osd(image)
+    angle = int(re.findall(r'(?<=Rotate: )\d+', osd)[0])
+    rotated = ndimage.rotate(image, -angle)
     return rotated
-
 
 def preprocessing(image):
     w, h = image.shape[0], image.shape[1]

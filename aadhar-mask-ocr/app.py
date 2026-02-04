@@ -23,10 +23,14 @@ else:
 # ---------------- IMAGE PROCESSING FUNCTIONS ----------------
 
 def rotate(image):
-    osd = pytesseract.image_to_osd(image)
-    angle = int(re.findall(r'(?<=Rotate: )\d+', osd)[0])
-    rotated = ndimage.rotate(image, -angle)
-    return rotated
+    try:
+        osd = pytesseract.image_to_osd(image)
+        angle = int(re.findall(r'(?<=Rotate: )\d+', osd)[0])
+        rotated = ndimage.rotate(image, -angle)
+        return rotated
+    except:
+        image
+    
 
 def preprocessing(image):
     w, h = image.shape[0], image.shape[1]
@@ -101,10 +105,9 @@ async def mask_aadhaar(file: UploadFile = File(...)):
 
     filename = f"masked_{uuid.uuid4()}.png"
 
-    # 1️⃣ Save to disk
-    cv2.imwrite(filename, masked_image)
 
-    # 2️⃣ Send image in response
+
+    # Send image in response
     success, encoded_image = cv2.imencode(".png", masked_image)
     if not success:
         return JSONResponse({"status": "error", "message": "Image encoding failed"})
